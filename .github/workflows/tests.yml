@@ -1,0 +1,13 @@
+name: CrossGuard-Fi verification
+on:
+  push:
+  pull_request:
+jobs:
+  cpp-python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run numeric and input-validation regression tests
+        run: python3 -m unittest discover -s tests -v
+      - name: Run Clang static analyzer on C++ extractor
+        run: clang++ --analyze -std=c++17 -Wall -Wextra cpp/csi_features.cpp
