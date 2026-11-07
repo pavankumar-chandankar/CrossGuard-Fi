@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.16)
+project(crossguard_fi_features LANGUAGES CXX)
+add_executable(csi_features csi_features.cpp)
+target_compile_features(csi_features PRIVATE cxx_std_17)
+target_compile_options(csi_features PRIVATE -Wall -Wextra -Wpedantic)
+include(CTest)
+add_test(NAME feature_smoke COMMAND bash -c "printf '1,2\\n3,4\\n' | $<TARGET_FILE:csi_features> 2")

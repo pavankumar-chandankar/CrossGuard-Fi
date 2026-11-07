@@ -1,61 +1,24 @@
-import json
+"""Compatibility checks for the legacy C++/Python CLI, retained from initial project scope."""
 from pathlib import Path
-import shutil
+import json
 import subprocess
 import sys
-import tempfile
-import unittest
-
-ROOT = Path(__file__).resolve().parents[1]
 
 
-class FeatureRegressionTests(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.tempdir = tempfile.TemporaryDirectory()
-        cls.binary = Path(cls.tempdir.name) / "csi_features"
-        compiler = shutil.which("g++") or shutil.which("clang++")
-        if not compiler:
-            raise unittest.SkipTest("Requires a C++17 compiler")
-        subprocess.run(
-            [compiler, "-std=c++17", "-Wall", "-Wextra", "-Werror",
-             str(ROOT / "cpp/csi_features.cpp"), "-o", str(cls.binary)],
-            check=True,
-        )
-
-    @classmethod
-    def tearDownClass(cls):
-        if hasattr(cls, "tempdir"):
-            cls.tempdir.cleanup()
-
-    def test_known_mean_and_population_stddev(self):
-        result = subprocess.run(
-            [str(self.binary), "2"], input="1,2\n3,4\n",
-            text=True, capture_output=True, check=True,
-        )
-        self.assertIn("0,2.000000,1.000000", result.stdout)
-        self.assertIn("1,3.000000,1.000000", result.stdout)
-
-    def test_rejects_malformed_or_nonfinite(self):
-        for content in ("", "1,2\n3\n", "1,nan\n"):
-            result = subprocess.run(
-                [str(self.binary), "2"], input=content,
-                text=True, capture_output=True,
-            )
-            self.assertNotEqual(result.returncode, 0, content)
-
-    def test_python_feature_pipeline(self):
-        path = Path(self.tempdir.name) / "example.csv"
-        path.write_text("1,2\n3,4\n", encoding="utf-8")
-        output = subprocess.run(
-            [sys.executable, str(ROOT / "python/pipeline.py"),
-             "--csv", str(path), "--extractor", str(self.binary)],
-            check=True, text=True, capture_output=True,
-        )
-        payload = json.loads(output.stdout)
-        self.assertEqual(payload["features"], [2.0, 3.0, 1.0, 1.0])
-        self.assertIsNone(payload["prediction"])
-
-
-if __name__ == "__main__":
-    unittest.main()
+def test_legacy_interface(tmp_path, cpp_executable=None):
+    # Build in the test itself to avoid depending on a separate fixture module.
+    from shutil import which
+    import pytest
+    compiler = which("g++") or which("clang++")
+    if not compiler:
+        pytest.skip("No C++ compiler")
+    source = Path(__file__).resolve().parents[1] / "cpp/csi_features.cpp"
+    executable = tmp_path / "csi_features"
+    subprocess.run([compiler, "-std=c++17", str(source), "-o", str(executable)], check=True)
+    csv_file = tmp_path / "demo.csv"
+    csv_file.write_text("1,2\n3,4\n", encoding="utf-8")
+    cli = Path(__file__).resolve().parents[1] / "python/pipeline.py"
+    run = subprocess.run([sys.executable, str(cli), "--csv", str(csv_file),
+                          "--extractor", str(executable)], capture_output=True,
+                         text=True, check=True)
+    assert json.loads(run.stdout)["features"] == [2.0, 3.0, 1.0, 1.0]

@@ -1,0 +1,6 @@
+# Reference for metadata auditing and local builds. Constraints are defined in pyproject.toml.
+numpy>=1.26,<3
+torch>=2.2,<3
+pydantic>=2.6,<3
+fastapi>=0.110,<1
+uvicorn>=0.27,<1

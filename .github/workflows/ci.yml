@@ -1,0 +1,30 @@
+name: CrossGuard-Fi research-engineering CI
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  python-and-cpp:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install CPU-only PyTorch
+        run: python -m pip install --index-url https://download.pytorch.org/whl/cpu 'torch>=2.2,<3'
+      - name: Install package and test dependencies
+        run: python -m pip install -e '.[dev]'
+      - name: Validate code
+        run: python -m compileall -q src tests scripts
+      - name: PyTorch, API, dataset and C++ numeric tests
+        run: pytest -q
+      - name: C++17 strict compilation
+        run: g++ -std=c++17 -Wall -Wextra -Werror -pedantic cpp/csi_features.cpp -o /tmp/csi_features
+      - name: Clang Static Analyzer
+        run: clang++ --analyze -std=c++17 -Wall -Wextra cpp/csi_features.cpp
+      - name: One-command synthetic training and sealed test smoke
+        run: python scripts/smoke.py

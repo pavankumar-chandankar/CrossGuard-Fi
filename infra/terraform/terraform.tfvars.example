@@ -1,0 +1,9 @@
+# EXAMPLE placeholders; do not commit real secrets, IDs or account-specific settings.
+aws_region          = "eu-central-1"
+environment         = "staging"
+vpc_id              = "vpc-REPLACE"
+public_subnet_ids   = ["subnet-PUBLIC1", "subnet-PUBLIC2"]
+private_subnet_ids  = ["subnet-PRIVATE1", "subnet-PRIVATE2"]
+tls_certificate_arn = "arn:aws:acm:eu-central-1:ACCOUNT_ID:certificate/REPLACE"
+api_key_secret_arn  = "arn:aws:secretsmanager:eu-central-1:ACCOUNT_ID:secret:crossguard-staging-REPLACE"
+container_image_uri = "ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/crossguard-fi@sha256:REPLACE_WITH_64_HEX_CHARS"

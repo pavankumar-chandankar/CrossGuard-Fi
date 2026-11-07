@@ -1,0 +1,19 @@
+services:
+  inference:
+    build: .
+    image: crossguard-fi:local
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      CGF_ENV: production
+      CGF_API_KEY: ${CGF_API_KEY:?Set CGF_API_KEY to a local secret first}
+      CGF_MODEL_PATH: /opt/crossguard/models/model.pt
+    volumes:
+      - ./artifacts:/opt/crossguard/models:ro
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m
+    cap_drop: ["ALL"]
+    security_opt:
+      - no-new-privileges:true
+    restart: "no"
