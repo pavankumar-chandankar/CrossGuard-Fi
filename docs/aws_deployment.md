@@ -2,7 +2,7 @@
 
 ## Deployment design and cost warning
 
-This is an **account- and release-specific reference** for an inference service, not evidence that CrossGuard-Fi has been deployed or tested in AWS. It creates real billable infrastructure only if an operator deliberately runs AWS and Terraform commands. In particular, **ALB, Fargate, NAT gateways/VPC endpoints, CloudWatch Logs, Secrets Manager and ECR storage are not generally free**. Use local Docker for portfolio verification; do not run Terraform just to demonstrate the project in interviews.
+This is an **account- and release-specific reference** for an inference service, not evidence that CrossGuard-Fi has been deployed or tested in AWS. It creates real billable infrastructure only if an operator deliberately runs AWS and Terraform commands. In particular, **ALB, Fargate, NAT gateways/VPC endpoints, CloudWatch Logs, Secrets Manager and ECR storage are not generally free**.
 
 Target path:
 
