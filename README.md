@@ -184,11 +184,3 @@ The container runs as a non-root user, has a read-only filesystem in Compose, a 
 - **Recommended next work:** obtain dataset/permission and channel ordering, verify label ontology, add site-disjoint and cross-device external test cohorts, capture operational latency and cold-start, assess class imbalance and domain shifts, add authentication gateway/rate limits, pin dependency lockfiles and sign release model artifacts.
 
 Further reading: [system architecture](docs/architecture.md), [experiment protocol](docs/experiment_protocol.md), [model card](docs/model_card.md), [threat model](docs/threat_model.md), [operations](docs/operations.md), and [engineering decisions](docs/decisions.md).
-
-## CV-safe description
-
-> **CrossGuard-Fi — Wi-Fi CSI preprocessing and ML inference (in development):** Implemented a Python/PyTorch research pipeline targeting 270 CSI channels at 50 Hz and 24 activity classes, including validated recording manifests, subject-disjoint training/evaluation, reproducible checkpoints, C++17 feature extraction with numerical regression tests, FastAPI inference, Docker packaging, and AWS ECS/Terraform deployment configuration. Real-data accuracy and AWS deployment are pending.
-
-This describes what is implemented and distinguishes **deployment configuration** from **production deployment**.
-
-**Maintainer:** Pavankumar Chandankar. Repository code changes and demonstrations should be assessed by their source, tests and CI history; this project does not purport to be a published PhD system.
